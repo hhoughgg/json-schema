@@ -66,6 +66,32 @@ export function validate(
       );
   }
 
+  // switch on schema types to look for our custom arrow types
+  switch(schema.type?.toString()) {
+    case 'boolean':
+    case 'number':
+    case 'string':
+    case 'object':
+    case 'null':
+    case 'array':
+    case 'integer':
+      // default types
+      break;
+    case 'int8':
+      schema.type = 'number'
+      if (schema.minimum === undefined || schema.minimum < -128)  {
+        schema.minimum = -128
+      }
+      if (schema.maximum === undefined || schema.maximum > 127)  {
+        schema.maximum = 127
+      }
+      break;
+    default:
+      throw new Error(
+        `Type of "${schema.type}" is not supported.`
+      );
+  }
+
   const {
     $ref,
     $recursiveRef,
