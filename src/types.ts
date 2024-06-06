@@ -40,6 +40,9 @@ export interface Schema {
 
   format?: string;
 
+  precision?: number;
+  scale?: number;
+
   properties?: Record<string | number, Schema | boolean>;
   patternProperties?: Record<string, Schema | boolean>;
   additionalProperties?: Schema | boolean;

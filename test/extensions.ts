@@ -23,10 +23,45 @@ describe('check json schema arrow extensions work', () => {
     const result3 = validator.validate({
       int8: 51852,
     });
+    const result4 = validator.validate({
+      int8: 'fail',
+    });
 
-    expect(result1.valid).equals(true)
-    expect(result2.valid).equals(false)
-    expect(result3.valid).equals(false)
+    expect(result1.valid, 'int8 valid when in range').equals(true)
+    expect(result2.valid, 'int8 invalid when out of negative range').equals(false)
+    expect(result3.valid, 'int8 invalid when out of positive range').equals(false)
+    expect(result4.valid, 'int8 invalid when not a number').equals(false)
+  })
+
+  it("should validate decimal type", () => {
+    // need to add some more tests here to make sure precision and scale are actually valid
+    // arrow supports decimal 128 and 256 - how does this translate to precision & scale
+    const schema: { type: InstanceType, required: Array<string>, properties: any } = {
+      type: 'object',
+      required: [],
+      properties: {
+        decimal: {
+          type: 'decimal',
+          precision: 10,
+          scale: 0
+        },
+      }
+    };
+
+    const validator = new Validator(schema, '2019-09', true);
+    const result1 = validator.validate({
+      decimal: 10,
+    });
+    const result2 = validator.validate({
+      decimal: 'hello',
+    });
+    const result3 = validator.validate({
+      decimal: '285893939361211',
+    });
+
+    expect(result1.valid, 'decimal must be a string').equals(false)
+    expect(result2.valid, 'decimal string must be a valid number').equals(false)
+    expect(result3.valid, 'decimal string is a valid number').equals(true)
   })
 
   // it("should validate int16 type", () => {
