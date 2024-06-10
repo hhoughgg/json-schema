@@ -66,7 +66,7 @@ export function validate(
       );
   }
 
-  const {
+  let {
     $ref,
     $recursiveRef,
     $recursiveAnchor,
@@ -120,10 +120,74 @@ export function validate(
     __absolute_recursive_ref__
   } = schema;
 
-  const errors: OutputUnit[] = [];
-
   if ($recursiveAnchor === true && recursiveAnchor === null) {
     recursiveAnchor = schema;
+  }
+
+  const errors: OutputUnit[] = [];
+
+  // switch on schema types to look for our custom arrow types
+  switch(schema.type?.toString()) {
+    case 'boolean':
+    case 'number':
+    case 'string':
+    case 'object':
+    case 'null':
+    case 'array':
+    case 'integer':
+      // default types
+      break;
+    case 'decimal':
+      $type = 'string'
+      if (rawInstanceType !== 'string') {
+        errors.push({
+          instanceLocation,
+          keyword: 'type',
+          keywordLocation: `${schemaLocation}/type`,
+          error: `Instance type "${rawInstanceType}" is invalid for "decimal". Expected "string".`
+        });
+      } else if (isNaN(instance)) {
+        errors.push({
+          instanceLocation,
+          keyword: 'numericalStringRequired',
+          keywordLocation: `${schemaLocation}/decimal`,
+          error: `Decimal is not a numerical string`
+        });
+      }
+      if (schema.precision === undefined) {
+        const key = 'precision'
+        const keywordLocation = `${schemaLocation}/${key}`;
+        errors.push({
+          instanceLocation,
+          keyword: 'dependentRequired',
+          keywordLocation,
+          error: `Instance has "decimal" but does not have "${key}".`
+        });
+      }
+      if (schema.scale === undefined) {
+        const key = 'scale'
+        const keywordLocation = `${schemaLocation}/${key}`;
+        errors.push({
+          instanceLocation,
+          keyword: 'dependentRequired',
+          keywordLocation,
+          error: `Instance has "decimal" but does not have "${key}".`
+        });
+      }
+      break
+    case 'int8':
+      $type = 'integer'
+      if (schema.minimum === undefined || schema.minimum < -128)  {
+        schema.minimum = -128
+      }
+      if (schema.maximum === undefined || schema.maximum > 127)  {
+        schema.maximum = 127
+      }
+      break;
+    default:
+      throw new Error(
+        `Type of "${schema.type}" is not supported.`
+      );
   }
 
   if ($recursiveRef === '#') {
