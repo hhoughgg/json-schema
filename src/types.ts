@@ -7,9 +7,13 @@ export const enum OutputFormat {
 }
 
 export type NumberInstanceExtensionType = 
-  | 'int8';
+  | 'int8' 
+  | 'float64' 
+  | 'timestamp_millis';
+
 export type StringInstanceExtensionType = 
 | 'decimal';
+
 export type JavascriptInstanceType =   
   | 'array'
   | 'boolean'

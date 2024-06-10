@@ -184,6 +184,10 @@ export function validate(
         schema.maximum = 127
       }
       break;
+    case 'float64':
+    case 'timestamp_millis':
+      $type = 'number'
+      break;
     default:
       throw new Error(
         `Type of "${schema.type}" is not supported.`
