@@ -13,7 +13,7 @@ describe('check json schema arrow extensions work', () => {
       }
     };
 
-    const validator = new Validator(schema, '2019-09', true);
+    const validator = new Validator(schema, '2019-09', true)
     const result1 = validator.validate({
       int8: 10,
     });
@@ -31,6 +31,93 @@ describe('check json schema arrow extensions work', () => {
     expect(result2.valid, 'int8 invalid when out of negative range').equals(false)
     expect(result3.valid, 'int8 invalid when out of positive range').equals(false)
     expect(result4.valid, 'int8 invalid when not a number').equals(false)
+  })
+
+  it("should validate int64 type", () => {
+    const schema: Schema = {
+      type: 'object',
+      required: [],
+      properties: {
+        int64: { type: 'int64' },
+      }
+    };
+
+    const validator = new Validator(schema, '2019-09', true)
+    const result1 = validator.validate({
+      int64: 10,
+    });
+    const result2 = validator.validate({
+      int64: -500,
+    });
+    const result3 = validator.validate({
+      int64: 51852,
+    });
+    const result4 = validator.validate({
+      int64: 'fail',
+    });
+
+    expect(result1.valid, 'int64 valid when in range').equals(true)
+    expect(result2.valid, 'int64 invalid when out of negative range').equals(true)
+    expect(result3.valid, 'int64 invalid when out of positive range').equals(true)
+    expect(result4.valid, 'int64 invalid when not a number').equals(false)
+  })
+
+  it("should validate float64 type", () => {
+    const schema: Schema = {
+      type: 'object',
+      required: [],
+      properties: {
+        float64: { type: 'float64' },
+      }
+    };
+
+    const validator = new Validator(schema, '2019-09', true)
+    const result1 = validator.validate({
+      float64: 10.842848298,
+    });
+    const result2 = validator.validate({
+      float64: -500.878885,
+    });
+    const result3 = validator.validate({
+      float64: 51852,
+    });
+    const result4 = validator.validate({
+      float64: 'fail',
+    });
+
+    expect(result1.valid, 'float64 valid when in range').equals(true)
+    expect(result2.valid, 'float64 valid when negative').equals(true)
+    expect(result3.valid, 'float64 valid without floating point').equals(true)
+    expect(result4.valid, 'float64 invalid when not a number').equals(false)
+  })
+
+  it("should validate timestamp_millis type", () => {
+    const schema: Schema = {
+      type: 'object',
+      required: [],
+      properties: {
+        timestamp: { type: 'timestamp_millis' },
+      }
+    };
+
+    const validator = new Validator(schema, '2019-09', true);
+    const result1 = validator.validate({
+      timestamp: 10353,
+    });
+    const result2 = validator.validate({
+      timestamp: -500,
+    });
+    const result3 = validator.validate({
+      timestamp: 5185253533,
+    });
+    const result4 = validator.validate({
+      timestamp: 'fail',
+    });
+
+    expect(result1.valid, 'timestamp_millis valid when positive').equals(true)
+    expect(result2.valid, 'timestamp_millis valid when negative').equals(true)
+    expect(result3.valid, 'timestamp_millis valid when a large number').equals(true)
+    expect(result4.valid, 'timestamp_millis invalid when not a number').equals(false)
   })
 
   it("should validate decimal type", () => {
@@ -79,30 +166,5 @@ describe('check json schema arrow extensions work', () => {
     expect(result3.valid, 'decimal string is a valid number').equals(true)
     expect(result4.valid, 'decimal schema with missing precision and scale should fail').equals(false)
   })
-
-  // it("should validate int16 type", () => {
-  //   const schema: { type: InstanceType, required: Array<string>, properties: any } = {
-  //     type: 'object',
-  //     required: ['name', 'email', 'number', 'bool', 'int8'],
-  //     properties: {
-  //       name: { type: 'string' },
-  //       email: { type: 'string', format: 'email' },
-  //       number: { type: 'number' },
-  //       bool: { type: 'boolean' },
-  //       int8: { type: 'int8' },
-  //     }
-  //   };
-
-  //   const validator = new Validator(schema, '2019-09', false);
-  //   const result = validator.validate({
-  //     name: 'hello',
-  //     email: 5, // invalid type
-  //     number: 'Hello', // invalid type
-  //     bool: 'false', // invalid type
-  //     int8: 10
-  //   });
-
-  //   expect(result.valid).equals(true)
-  // })
 })
 
