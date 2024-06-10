@@ -33,6 +33,35 @@ describe('check json schema arrow extensions work', () => {
     expect(result4.valid, 'int8 invalid when not a number').equals(false)
   })
 
+  it("should validate int64 type", () => {
+    const schema: Schema = {
+      type: 'object',
+      required: [],
+      properties: {
+        int64: { type: 'int64' },
+      }
+    };
+
+    const validator = new Validator(schema, '2019-09', true)
+    const result1 = validator.validate({
+      int64: 10,
+    });
+    const result2 = validator.validate({
+      int64: -500,
+    });
+    const result3 = validator.validate({
+      int64: 51852,
+    });
+    const result4 = validator.validate({
+      int64: 'fail',
+    });
+
+    expect(result1.valid, 'int64 valid when in range').equals(true)
+    expect(result2.valid, 'int64 invalid when out of negative range').equals(true)
+    expect(result3.valid, 'int64 invalid when out of positive range').equals(true)
+    expect(result4.valid, 'int64 invalid when not a number').equals(false)
+  })
+
   it("should validate float64 type", () => {
     const schema: Schema = {
       type: 'object',

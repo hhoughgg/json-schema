@@ -184,6 +184,7 @@ export function validate(
         schema.maximum = 127
       }
       break;
+    case 'int64':
     case 'float64':
     case 'timestamp_millis':
       $type = 'number'
