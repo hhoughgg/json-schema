@@ -1,5 +1,5 @@
 {
-  "name": "@cfworker/json-schema",
+  "name": "json-schema",
   "type": "module",
   "version": "1.12.8",
   "description": "A JSON schema validator that will run on Cloudflare workers. Supports drafts 4, 7, 2019-09, and 2020-12.",
@@ -24,7 +24,7 @@
     "README.md",
     "package.json"
   ],
-  "repository": "https://github.com/cfworker/cfworker",
+  "repository": "https://https://github.com/hhoughgg/json-schema",
   "author": "Jeremy Danyow <jdanyow@gmail.com>",
   "homepage": "https://github.com/cfworker/cfworker/tree/master/packages/json-schema/README.md",
   "license": "MIT",
