@@ -6,7 +6,11 @@ export const enum OutputFormat {
   Detailed = 1 << 2
 }
 
-export type InstanceType =
+export type NumberInstanceExtensionType = 
+  | 'int8';
+export type StringInstanceExtensionType = 
+| 'decimal';
+export type JavascriptInstanceType =   
   | 'array'
   | 'boolean'
   | 'integer'
@@ -14,6 +18,8 @@ export type InstanceType =
   | 'number'
   | 'object'
   | 'string';
+
+export type InstanceType = JavascriptInstanceType | NumberInstanceExtensionType | StringInstanceExtensionType
 
 export interface Schema {
   $id?: string;

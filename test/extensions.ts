@@ -1,11 +1,11 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
-import { InstanceType, Validator } from '../src';
+import { Schema, Validator } from '../src';
 
 
 describe('check json schema arrow extensions work', () => {
   it("should validate int8 type", () => {
-    const schema: { type: InstanceType, required: Array<string>, properties: any } = {
+    const schema: Schema = {
       type: 'object',
       required: [],
       properties: {
@@ -36,7 +36,7 @@ describe('check json schema arrow extensions work', () => {
   it("should validate decimal type", () => {
     // need to add some more tests here to make sure precision and scale are actually valid
     // arrow supports decimal 128 and 256 - how does this translate to precision & scale
-    const schema: { type: InstanceType, required: Array<string>, properties: any } = {
+    const schema: Schema = {
       type: 'object',
       required: [],
       properties: {
@@ -48,7 +48,19 @@ describe('check json schema arrow extensions work', () => {
       }
     };
 
+    const invalidSchema: Schema = {
+      type: 'object',
+      required: [],
+      properties: {
+        decimal: {
+          type: 'decimal',
+        },
+      }
+    };
+
     const validator = new Validator(schema, '2019-09', true);
+    const invalidValidator = new Validator(invalidSchema, '2019-09', true);
+
     const result1 = validator.validate({
       decimal: 10,
     });
@@ -58,10 +70,14 @@ describe('check json schema arrow extensions work', () => {
     const result3 = validator.validate({
       decimal: '285893939361211',
     });
+    const result4 = invalidValidator.validate({
+      decimal: '285893939361211',
+    });
 
     expect(result1.valid, 'decimal must be a string').equals(false)
     expect(result2.valid, 'decimal string must be a valid number').equals(false)
     expect(result3.valid, 'decimal string is a valid number').equals(true)
+    expect(result4.valid, 'decimal schema with missing precision and scale should fail').equals(false)
   })
 
   // it("should validate int16 type", () => {
